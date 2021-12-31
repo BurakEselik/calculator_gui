@@ -181,4 +181,4 @@ class Ui_MainWindow(object):
         self.btn_clear.setText(_translate("MainWindow", "c"))
         self.btn_back.setText(_translate("MainWindow", "<X"))
         self.btn_plus.setText(_translate("MainWindow", "+"))
-        self.lbl_screen.setText(_translate("MainWindow", "<html><head/><body><p align=\"right\">0</p></body></html>"))
+        self.lbl_screen.setText(_translate("MainWindow", "<html><head/><body><p align=\"right\"></p></body></html>"))
