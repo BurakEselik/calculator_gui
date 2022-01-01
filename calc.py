@@ -36,20 +36,25 @@ class Calc(QtWidgets.QMainWindow):
         lbl_screen = self.ui.lbl_screen.text()
         soup = BeautifulSoup(lbl_screen, 'html.parser')
 
-        calc_str = self.ui.lbl_screen_2.text() + soup.p.get_text()
-        
-        if calc_str and calc_str[-1] not in '+-/x' and (not calc_str.startswith('Max Range!')):
-            result = calc_str.replace('x','*')
-            try:
-                result = eval(result)
-                if isinstance(result, float):
-                    result = round(result, 6)
-            except ZeroDivisionError:
-                result = 'error'
-            except NameError:
-                result = ''
-            self.ui.lbl_screen_2.setText(f'{str(calc_str)} =')
-            self.ui.lbl_screen.setText(text_1 + str(result) + text_2)
+        if self.ui.lbl_screen_2.text()[-1] == '=':
+            print('')
+        else:
+            calc_str = self.ui.lbl_screen_2.text() + soup.p.get_text()
+            
+            if calc_str and calc_str[-1] not in '+-/x' and (not calc_str.startswith('Max Range!')):
+                result = calc_str.replace('x','*')
+                try:
+                    result = eval(result)
+                    if isinstance(result, float):
+                        result = round(result, 6)
+                except ZeroDivisionError:
+                    result = 'error'
+                except NameError:
+                    result = ''
+                except SyntaxError as err:
+                    print(err)
+                self.ui.lbl_screen_2.setText(f'{str(calc_str)} =')
+                self.ui.lbl_screen.setText(text_1 + str(result) + text_2)
 
 
     def clear_one(self):
