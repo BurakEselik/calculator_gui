@@ -57,8 +57,16 @@ class Calc(QtWidgets.QMainWindow):
         text_2 = '</p></body></html>'
         lbl_screen = self.ui.lbl_screen.text()
         soup = BeautifulSoup(lbl_screen, 'html.parser')
-        self.ui.lbl_screen.setText(text_1 + soup.p.get_text()[:-1] + text_2)
-        self.ui.lbl_screen_2.setText('')
+        if soup.p.get_text():
+            self.ui.lbl_screen.setText(text_1 + soup.p.get_text()[:-1] + text_2)
+        else:
+            if self.ui.lbl_screen_2.text() and not self.ui.lbl_screen_2.text().endswith(('/', '+', '-', 'x')):
+                self.ui.lbl_screen.setText(text_1 + self.ui.lbl_screen_2.text().strip() + text_2)
+                self.ui.lbl_screen_2.setText('')
+
+            else:
+                self.ui.lbl_screen_2.setText(self.ui.lbl_screen_2.text()[:-1])
+
 
         if len(soup.p.get_text()) <= 11: 
             font = QtGui.QFont()
