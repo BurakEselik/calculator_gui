@@ -35,10 +35,11 @@ class Calc(QtWidgets.QMainWindow):
         result = str()
         lbl_screen = self.ui.lbl_screen.text()
         soup = BeautifulSoup(lbl_screen, 'html.parser')
-        calc_str = soup.p.get_text()
 
-        if calc_str and calc_str[-1] not in '+-/x':
-            result = calc_str.replace('x','*')    
+        calc_str = self.ui.lbl_screen_2.text() + soup.p.get_text()
+        
+        if calc_str and calc_str[-1] not in '+-/x' and (not calc_str.startswith('Max Range!')):
+            result = calc_str.replace('x','*')
             try:
                 result = eval(result)
                 if isinstance(result, float):
@@ -108,17 +109,25 @@ class Calc(QtWidgets.QMainWindow):
                 pass
 
             if sender in '/x+-':
-                try:
-                    last_sign = soup.p.get_text()[-1]
-                    if (last_sign != '+') and (last_sign != '-') and (last_sign != '/') and (last_sign != 'x'):
-                        result = soup.p.get_text() + sender
-                    else:
-                        result = soup.p.get_text()
-                except IndexError as err:
-                    pass
+                if (self.ui.lbl_screen_2.text()) and (self.ui.lbl_screen_2.text()[-1] == '='):
+                    self.ui.lbl_screen_2.setText(soup.p.get_text() + sender)
+                else:
+                    try:
+                        last_sign = soup.p.get_text()[-1]
+                        if (last_sign != '+') and (last_sign != '-') and (last_sign != '/') and (last_sign != 'x'):
+                            lbl_screen_2_text = self.ui.lbl_screen_2.text()
+                            result = soup.p.get_text() + sender
+                            self.ui.lbl_screen_2.setText(lbl_screen_2_text + result)
+                            result = ''
+                        else:
+                            result = soup.p.get_text()
+                    except IndexError as err:
+                        pass
 
             elif sender in '0123456789':
                 result = soup.p.get_text() + sender
+                if result[0] == '0' and len(result)>1:
+                    result = result[1:]
 
             self.ui.lbl_screen.setText(text_1 +  result + text_2)
 
