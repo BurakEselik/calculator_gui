@@ -35,9 +35,10 @@ class Calc(QtWidgets.QMainWindow):
         result = str()
         lbl_screen = self.ui.lbl_screen.text()
         soup = BeautifulSoup(lbl_screen, 'html.parser')
+        calc_str = soup.p.get_text()
 
-        if soup.p.get_text() and soup.p.get_text()[-1] not in '+-/x':
-            result = soup.p.get_text().replace('x','*')    
+        if calc_str and calc_str[-1] not in '+-/x':
+            result = calc_str.replace('x','*')    
             try:
                 result = eval(result)
                 if isinstance(result, float):
@@ -46,6 +47,7 @@ class Calc(QtWidgets.QMainWindow):
                 result = 'error'
             except NameError:
                 result = ''
+            self.ui.lbl_screen_2.setText(f'{str(calc_str)} =')
             self.ui.lbl_screen.setText(text_1 + str(result) + text_2)
 
 
@@ -55,6 +57,7 @@ class Calc(QtWidgets.QMainWindow):
         lbl_screen = self.ui.lbl_screen.text()
         soup = BeautifulSoup(lbl_screen, 'html.parser')
         self.ui.lbl_screen.setText(text_1 + soup.p.get_text()[:-1] + text_2)
+        self.ui.lbl_screen_2.setText('')
 
         if len(soup.p.get_text()) <= 11: 
             font = QtGui.QFont()
@@ -75,6 +78,7 @@ class Calc(QtWidgets.QMainWindow):
         font = QtGui.QFont()
         font.setPointSize(36)
         self.ui.lbl_screen.setFont(font)
+        self.ui.lbl_screen_2.setText('')
 
     def edit_screen(self):
         sender = self.sender().text()
@@ -86,36 +90,37 @@ class Calc(QtWidgets.QMainWindow):
         print(sender)
 
         if len(soup.p.get_text()) == 25:
-            result == soup.p.get_text()
+            result = soup.p.get_text()
             self.ui.lbl_screen.setText(text_1 + result + text_2)
-            #TODO add max range on the 2. screen 
+            #TODO add max range on the 2. screen
+            self.ui.lbl_screen_2.setText('Max Range!')
             
-
-        if len(soup.p.get_text()) == 11: 
-            font = QtGui.QFont()
-            font.setPointSize(24)
-            self.ui.lbl_screen.setFont(font)
-        elif len(soup.p.get_text()) >= 17:
-            font = QtGui.QFont()
-            font.setPointSize(16)
-            self.ui.lbl_screen.setFont(font)
         else:
-            pass
-
-        if sender in '/x+-':
-            try:
-                last_sign = soup.p.get_text()[-1]
-                if (last_sign != '+') and (last_sign != '-') and (last_sign != '/') and (last_sign != 'x'):
-                    result = soup.p.get_text() + sender
-                else:
-                    result = soup.p.get_text()
-            except IndexError as err:
+            if len(soup.p.get_text()) == 11: 
+                font = QtGui.QFont()
+                font.setPointSize(24)
+                self.ui.lbl_screen.setFont(font)
+            elif len(soup.p.get_text()) >= 17:
+                font = QtGui.QFont()
+                font.setPointSize(16)
+                self.ui.lbl_screen.setFont(font)
+            else:
                 pass
 
-        elif sender in '0123456789':
-            result = soup.p.get_text() + sender
+            if sender in '/x+-':
+                try:
+                    last_sign = soup.p.get_text()[-1]
+                    if (last_sign != '+') and (last_sign != '-') and (last_sign != '/') and (last_sign != 'x'):
+                        result = soup.p.get_text() + sender
+                    else:
+                        result = soup.p.get_text()
+                except IndexError as err:
+                    pass
 
-        self.ui.lbl_screen.setText(text_1 +  result + text_2)
+            elif sender in '0123456789':
+                result = soup.p.get_text() + sender
+
+            self.ui.lbl_screen.setText(text_1 +  result + text_2)
 
 def app():
     app = QtWidgets.QApplication(sys.argv)

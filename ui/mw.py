@@ -157,6 +157,10 @@ class Ui_MainWindow(object):
 "border: 1px solid black;\n"
 "")
         self.lbl_screen.setObjectName("lbl_screen")
+        self.lbl_screen_2 = QtWidgets.QLabel(MainWindow)
+        self.lbl_screen_2.setGeometry(QtCore.QRect(10, 0, 301, 20))
+        self.lbl_screen_2.setText("")
+        self.lbl_screen_2.setObjectName("lbl_screen_2")
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
